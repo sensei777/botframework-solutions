@@ -10,14 +10,12 @@ The basic command to refresh your connected skills:
 botskills refresh [options]
 ```
 
-### Options
+## Options
 
 | Option                        | Description                                                                                                                                                                 |
 |-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | --cs                          | Determine your Virtual Assistant project structure to be a csharp-like structure                                                                                            |
 | --ts                          | Determine your Virtual Assistant project structure to be a TypeScript-like structure                                                                                        |
-| --dispatchName [name]         | (OPTIONAL) Name of your Virtual Assistant's '.dispatch' file (defaults to the name displayed in your Cognitive Models file)                                                 |
-| --language [language]         | (OPTIONAL) Locale used for LUIS culture (defaults to 'en-us')                                                                                                               |
 | --luisFolder [path]           | (OPTIONAL) Path to the folder containing your Skills' '.lu' files (defaults to './deployment/resources/skills/en' inside your Virtual Assistant folder)                     |
 | --dispatchFolder [path]       | (OPTIONAL) Path to the folder containing your Virtual Assistant's '.dispatch' file (defaults to './deployment/resources/dispatch/en' inside your Virtual Assistant folder)  |
 | --outFolder [path]            | (OPTIONAL) Path for any output file that may be generated (defaults to your Virtual Assistant's root folder)                                                                |
