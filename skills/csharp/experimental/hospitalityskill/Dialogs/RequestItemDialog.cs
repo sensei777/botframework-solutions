@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using HospitalitySkill.Models;
@@ -40,6 +42,8 @@ namespace HospitalitySkill.Dialogs
             AddDialog(new WaterfallDialog(nameof(RequestItemDialog), requestItem));
             AddDialog(new TextPrompt(DialogIds.ItemPrompt, ValidateItemPrompt));
             AddDialog(new ConfirmPrompt(DialogIds.GuestServicesPrompt, ValidateGuestServicesPrompt));
+
+            ThisIntent = Luis.HospitalityLuis.Intent.RequestItem;
         }
 
         private async Task<DialogTurnResult> ItemPrompt(WaterfallStepContext sc, CancellationToken cancellationToken)
@@ -132,11 +136,19 @@ namespace HospitalitySkill.Dialogs
 
             if (notAvailable.Count > 0)
             {
-                var reply = ResponseManager.GetResponse(RequestItemResponses.ItemNotAvailable).Text;
+                var sb = new StringBuilder();
+
                 foreach (var itemRequest in notAvailable)
                 {
-                    reply += Environment.NewLine + "- " + itemRequest.Item[0];
+                    sb.Append($"{Environment.NewLine}- {itemRequest.Item[0]}");
                 }
+
+                var tokens = new StringDictionary
+                {
+                    { "Items", sb.ToString() }
+                };
+
+                var reply = ResponseManager.GetResponse(RequestItemResponses.ItemNotAvailable, tokens);
 
                 await sc.Context.SendActivityAsync(reply);
                 return await sc.PromptAsync(DialogIds.GuestServicesPrompt, new PromptOptions()
@@ -187,8 +199,12 @@ namespace HospitalitySkill.Dialogs
                 await _hotelService.RequestItems(convState.ItemList);
 
                 // if at least one item was available send this card reply
-                await sc.Context.SendActivityAsync(ResponseManager.GetCardResponse(null, new Card(GetCardName(sc.Context, "RequestItemCard")), null, "items", roomItems));
-                await sc.Context.SendActivityAsync(ResponseManager.GetResponse(RequestItemResponses.ItemsRequested));
+                var tokens = new StringDictionary
+                {
+                    { "Items", GetCombinedList(roomItems, (item) => { return $"{((RoomItem)item.Data).Quantity} {((RoomItem)item.Data).Item}"; }) }
+                };
+
+                await sc.Context.SendActivityAsync(ResponseManager.GetCardResponse(RequestItemResponses.ItemsRequested, new Card(GetCardName(sc.Context, "RequestItemCard")), tokens, "items", roomItems));
             }
 
             return await sc.EndDialogAsync();
