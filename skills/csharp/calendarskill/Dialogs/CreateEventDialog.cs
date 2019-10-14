@@ -622,7 +622,7 @@ namespace CalendarSkill.Dialogs
                     Location = state.MeetingInfor.Location,
                 };
 
-                var calendarService = ServiceManager.InitCalendarService(state.APIToken, state.EventSource);
+                var calendarService = ServiceManager.InitCalendarService(state.APIToken, state.EventSource, sc.Context);
                 if (await calendarService.CreateEventAysnc(newEvent) != null)
                 {
                     var tokens = new StringDictionary

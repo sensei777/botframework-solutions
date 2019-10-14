@@ -109,7 +109,7 @@ namespace CalendarSkill.Dialogs
                 var state = await Accessor.GetAsync(sc.Context);
                 var options = (ChangeEventStatusDialogOptions)sc.Options;
 
-                var calendarService = ServiceManager.InitCalendarService(state.APIToken, state.EventSource);
+                var calendarService = ServiceManager.InitCalendarService(state.APIToken, state.EventSource, sc.Context);
                 var confirmResult = (bool)sc.Result;
                 if (confirmResult)
                 {
@@ -179,7 +179,7 @@ namespace CalendarSkill.Dialogs
                 }
                 else
                 {
-                    var calendarService = ServiceManager.InitCalendarService(state.APIToken, state.EventSource);
+                    var calendarService = ServiceManager.InitCalendarService(state.APIToken, state.EventSource, sc.Context);
                     if (options.NewEventStatus == EventStatus.Cancelled)
                     {
                         return await sc.PromptAsync(Actions.GetEventPrompt, new GetEventOptions(calendarService, state.GetUserTimeZone())

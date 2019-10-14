@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
+using CalendarSkill.Middlewares;
 using CalendarSkill.Responses.Shared;
 using CalendarSkill.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Azure;
 using Microsoft.Bot.Builder.Dialogs;
@@ -18,7 +20,9 @@ namespace CalendarSkill.Adapters
             UserState userState,
             ConversationState conversationState,
             ResponseManager responseManager,
+            IHttpContextAccessor httpContextAccessor,
             IBotTelemetryClient telemetryClient)
+            : base(null, telemetryClient)
         {
             OnTurnError = async (context, exception) =>
             {
@@ -28,8 +32,9 @@ namespace CalendarSkill.Adapters
                 telemetryClient.TrackException(exception);
             };
 
-            Use(new TranscriptLoggerMiddleware(new AzureBlobTranscriptStore(settings.BlobStorage.ConnectionString, settings.BlobStorage.Container)));
-            Use(new TelemetryLoggerMiddleware(telemetryClient, logPersonalInformation: true));
+            Use(new TelemetryInitializerMiddleware(httpContextAccessor));
+            //Use(new TranscriptLoggerMiddleware(new AzureBlobTranscriptStore(settings.BlobStorage.ConnectionString, settings.BlobStorage.Container)));
+            //Use(new TelemetryLoggerMiddleware(telemetryClient, logPersonalInformation: true));
             Use(new SetLocaleMiddleware(settings.DefaultLocale ?? "en-us"));
             Use(new EventDebuggerMiddleware());
             Use(new SkillMiddleware(userState, conversationState, conversationState.CreateProperty<DialogState>(nameof(DialogState))));

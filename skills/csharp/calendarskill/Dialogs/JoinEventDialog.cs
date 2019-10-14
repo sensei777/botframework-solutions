@@ -157,7 +157,7 @@ namespace CalendarSkill.Dialogs
                 }
                 else
                 {
-                    var calendarService = ServiceManager.InitCalendarService(state.APIToken, state.EventSource);
+                    var calendarService = ServiceManager.InitCalendarService(state.APIToken, state.EventSource, sc.Context);
                     return await sc.PromptAsync(Actions.GetEventPrompt, new GetEventOptions(calendarService, state.GetUserTimeZone())
                     {
                         Prompt = ResponseManager.GetResponse(JoinEventResponses.NoMeetingToConnect),

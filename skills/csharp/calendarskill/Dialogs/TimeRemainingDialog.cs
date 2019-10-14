@@ -57,7 +57,7 @@ namespace CalendarSkill.Dialogs
                     return await sc.EndDialogAsync(true);
                 }
 
-                var calendarService = ServiceManager.InitCalendarService(state.APIToken, state.EventSource);
+                var calendarService = ServiceManager.InitCalendarService(state.APIToken, state.EventSource, sc.Context);
 
                 var eventList = await calendarService.GetUpcomingEventsAsync();
                 var nextEventList = new List<EventModel>();

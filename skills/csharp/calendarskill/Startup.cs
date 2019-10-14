@@ -102,7 +102,7 @@ namespace CalendarSkill
             services.AddTransient<IServiceManager, ServiceManager>();
 
             // Configure responses
-            services.AddSingleton(sp => new ResponseManager(
+            var resp = new ResponseManager(
                 settings.CognitiveModels.Select(l => l.Key).ToArray(),
                 new FindContactResponses(),
                 new ChangeEventStatusResponses(),
@@ -112,7 +112,8 @@ namespace CalendarSkill
                 new CalendarSharedResponses(),
                 new SummaryResponses(),
                 new TimeRemainingResponses(),
-                new UpdateEventResponses()));
+                new UpdateEventResponses());
+            services.AddSingleton(resp);
 
             // register dialogs
             services.AddTransient<MainDialog>();

@@ -37,8 +37,8 @@ namespace VirtualAssistantSample.Adapters
 
             // Uncomment the following line for local development without Azure Storage
             // Use(new TranscriptLoggerMiddleware(new MemoryTranscriptStore()));
-            Use(new TranscriptLoggerMiddleware(new AzureBlobTranscriptStore(settings.BlobStorage.ConnectionString, settings.BlobStorage.Container)));
-            Use(new ShowTypingMiddleware());
+            //Use(new TranscriptLoggerMiddleware(new AzureBlobTranscriptStore(settings.BlobStorage.ConnectionString, settings.BlobStorage.Container)));
+            //Use(new ShowTypingMiddleware());
             Use(new FeedbackMiddleware(conversationState, telemetryClient));
             Use(new SetLocaleMiddleware(settings.DefaultLocale ?? "en-us"));
             Use(new EventDebuggerMiddleware());

@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using CalendarSkill.Middlewares;
 using CalendarSkill.Responses.Shared;
 using CalendarSkill.Services;
 using Microsoft.Bot.Builder;
@@ -28,9 +29,10 @@ namespace CalendarSkill.Adapters
                 telemetryClient.TrackException(exception);
             };
 
-            Use(new TranscriptLoggerMiddleware(new AzureBlobTranscriptStore(settings.BlobStorage.ConnectionString, settings.BlobStorage.Container)));
-            Use(new TelemetryLoggerMiddleware(telemetryClient, logPersonalInformation: true));
-            Use(new ShowTypingMiddleware());
+            Use(new LatencyMiddleware(settings, telemetryClient, "Calendar"));
+            // Use(new TranscriptLoggerMiddleware(new AzureBlobTranscriptStore(settings.BlobStorage.ConnectionString, settings.BlobStorage.Container)));
+            // Use(new TelemetryLoggerMiddleware(telemetryClient, logPersonalInformation: true));
+            // Use(new ShowTypingMiddleware());
             Use(new SetLocaleMiddleware(settings.DefaultLocale ?? "en-us"));
             Use(new EventDebuggerMiddleware());
         }

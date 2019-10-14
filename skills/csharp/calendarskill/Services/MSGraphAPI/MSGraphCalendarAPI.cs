@@ -3,19 +3,28 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using CalendarSkill.Models;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Solutions.Middleware;
 using Microsoft.Graph;
 
 namespace CalendarSkill.Services.MSGraphAPI
 {
     public class MSGraphCalendarAPI : ICalendarService
     {
+        private readonly Stopwatch _stopWatch;
         private readonly IGraphServiceClient _graphClient;
+        private readonly IBotTelemetryClient _botTelemetryClient;
+        private readonly ITurnContext _ctx;
 
-        public MSGraphCalendarAPI(IGraphServiceClient serviceClient)
+        public MSGraphCalendarAPI(IGraphServiceClient serviceClient, IBotTelemetryClient botTelemetryClient, ITurnContext ctx)
         {
+            _stopWatch = new Stopwatch();
             _graphClient = serviceClient;
+            _botTelemetryClient = botTelemetryClient ?? NullBotTelemetryClient.Instance;
+            _ctx = ctx;
         }
 
         /// <inheritdoc/>
@@ -109,7 +118,9 @@ namespace CalendarSkill.Services.MSGraphAPI
         {
             try
             {
+                _stopWatch.Restart();
                 await _graphClient.Me.Events[id].Request().DeleteAsync();
+                TrackGraphLatency("MeEventsDelete");
             }
             catch (ServiceException ex)
             {
@@ -121,7 +132,9 @@ namespace CalendarSkill.Services.MSGraphAPI
         {
             try
             {
+                _stopWatch.Restart();
                 await _graphClient.Me.Events[id].Decline("decline").Request().PostAsync();
+                TrackGraphLatency("MeEventsDecline");
             }
             catch (ServiceException ex)
             {
@@ -133,7 +146,9 @@ namespace CalendarSkill.Services.MSGraphAPI
         {
             try
             {
+                _stopWatch.Restart();
                 await _graphClient.Me.Events[id].Accept("accept").Request().PostAsync();
+                TrackGraphLatency("MeEventsAccept");
             }
             catch (ServiceException ex)
             {
@@ -150,7 +165,9 @@ namespace CalendarSkill.Services.MSGraphAPI
         {
             try
             {
+                _stopWatch.Restart();
                 var updatedEvet = await _graphClient.Me.Events[updateEvent.Id].Request().UpdateAsync(updateEvent);
+                TrackGraphLatency("MeEventsUpdate");
                 return updatedEvet;
             }
             catch (ServiceException ex)
@@ -174,7 +191,9 @@ namespace CalendarSkill.Services.MSGraphAPI
             IUserCalendarViewCollectionPage events = null;
             try
             {
+                _stopWatch.Restart();
                 events = await _graphClient.Me.CalendarView.Request(options).GetAsync();
+                TrackGraphLatency("MeCalendarView");
             }
             catch (ServiceException ex)
             {
@@ -216,7 +235,9 @@ namespace CalendarSkill.Services.MSGraphAPI
 
             try
             {
+                _stopWatch.Restart();
                 calendar = await _graphClient.Me.Calendar.CalendarView.Request(options).GetAsync();
+                TrackGraphLatency("MeCalendarCalendarView");
             }
             catch (ServiceException ex)
             {
@@ -256,7 +277,9 @@ namespace CalendarSkill.Services.MSGraphAPI
 
             try
             {
+                _stopWatch.Restart();
                 events = await _graphClient.Me.CalendarView.Request(options).GetAsync();
+                TrackGraphLatency("MeCalendarView");
             }
             catch (ServiceException ex)
             {
@@ -285,13 +308,20 @@ namespace CalendarSkill.Services.MSGraphAPI
             try
             {
                 // Add the event.
+                _stopWatch.Restart();
                 var createdEvent = await _graphClient.Me.Events.Request().AddAsync(newEvent);
+                TrackGraphLatency("MeEventsAdd");
                 return createdEvent;
             }
             catch (ServiceException ex)
             {
                 throw GraphClient.HandleGraphAPIException(ex);
             }
+        }
+
+        private void TrackGraphLatency(string name)
+        {
+            _botTelemetryClient.TrackLatency(_ctx, _stopWatch, $"Graph{name}");
         }
     }
 }

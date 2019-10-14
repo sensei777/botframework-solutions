@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
+using Microsoft.Bot.Builder.Solutions.Middleware;
 using Microsoft.Bot.Builder.Solutions.Responses;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Authentication;
@@ -27,6 +28,7 @@ namespace Microsoft.Bot.Builder.Solutions.Authentication
         private ResponseManager _responseManager;
         private bool localAuthConfigured = false;
         private MicrosoftAppCredentials _appCredentials;
+        private System.Diagnostics.Stopwatch _stopwatch = new System.Diagnostics.Stopwatch();
 
         public MultiProviderAuthDialog(List<OAuthConnection> authenticationConnections, MicrosoftAppCredentials appCredentials = null)
             : base(nameof(MultiProviderAuthDialog))
@@ -293,11 +295,19 @@ namespace Microsoft.Bot.Builder.Solutions.Authentication
                 _selectedAuthType = choice.Value;
             }
 
+            _stopwatch.Restart();
             return await stepContext.PromptAsync(_selectedAuthType, new PromptOptions(), cancellationToken).ConfigureAwait(false);
         }
 
         private async Task<DialogTurnResult> HandleTokenResponseAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            // TODO tracking here is simpler
+            // in case not in one turn
+            if (_stopwatch.IsRunning)
+            {
+                TelemetryClient.TrackLatency(stepContext.Context, _stopwatch, $"OAuth{_selectedAuthType}", LatencyMiddleware.LatencyAuthName);
+            }
+
             if (stepContext.Result is TokenResponse tokenResponse && !string.IsNullOrWhiteSpace(tokenResponse.Token))
             {
                 var result = await CreateProviderTokenResponseAsync(stepContext.Context, tokenResponse).ConfigureAwait(false);
@@ -345,7 +355,10 @@ namespace Microsoft.Bot.Builder.Solutions.Authentication
                 var tokenProvider = context.Adapter as IUserTokenProvider;
                 if (tokenProvider != null)
                 {
-                    return await tokenProvider.GetTokenStatusAsync(context, userId, includeFilter, cancellationToken).ConfigureAwait(false);
+                    _stopwatch.Restart();
+                    var result = await tokenProvider.GetTokenStatusAsync(context, userId, includeFilter, cancellationToken).ConfigureAwait(false);
+                    TelemetryClient.TrackLatency(context, _stopwatch, "GetTokenStatus", LatencyMiddleware.LatencyAuthName);
+                    return result;
                 }
                 else
                 {
