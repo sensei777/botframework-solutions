@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HospitalitySkill.Models;
 using HospitalitySkill.Responses.RoomService;
+using HospitalitySkill.Responses.Shared;
 using HospitalitySkill.Services;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
@@ -212,6 +213,10 @@ namespace HospitalitySkill.Dialogs
             if (confirm)
             {
                 await sc.Context.SendActivityAsync(ResponseManager.GetResponse(RoomServiceResponses.FinalOrderConfirmation));
+            }
+            else
+            {
+                await sc.Context.SendActivityAsync(ResponseManager.GetResponse(SharedResponses.CancellingMessage));
             }
 
             return await sc.EndDialogAsync();

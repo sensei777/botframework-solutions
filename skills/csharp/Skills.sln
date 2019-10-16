@@ -49,6 +49,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointOfInterestSkill.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoSkill.Tests", "tests\todoskill.tests\ToDoSkill.Tests.csproj", "{5882D204-F86A-47D1-8685-BFD357E5EBF6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualAssistantSample", "..\..\templates\Virtual-Assistant-Template\csharp\Sample\VirtualAssistantSample\VirtualAssistantSample.csproj", "{3A842BFB-FDF5-4638-BE97-72276D15E53F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HospitalityAssistant", "..\..\samples\csharp\assistants\HospitalityAssistant\HospitalityAssistant.csproj", "{DF3FEC71-052B-4D60-9983-837B3CF556B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - NuGet Packages|Any CPU = Debug - NuGet Packages|Any CPU
@@ -217,6 +221,22 @@ Global
 		{5882D204-F86A-47D1-8685-BFD357E5EBF6}.Documentation|Any CPU.Build.0 = Debug|Any CPU
 		{5882D204-F86A-47D1-8685-BFD357E5EBF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5882D204-F86A-47D1-8685-BFD357E5EBF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A842BFB-FDF5-4638-BE97-72276D15E53F}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A842BFB-FDF5-4638-BE97-72276D15E53F}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{3A842BFB-FDF5-4638-BE97-72276D15E53F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A842BFB-FDF5-4638-BE97-72276D15E53F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A842BFB-FDF5-4638-BE97-72276D15E53F}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A842BFB-FDF5-4638-BE97-72276D15E53F}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{3A842BFB-FDF5-4638-BE97-72276D15E53F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A842BFB-FDF5-4638-BE97-72276D15E53F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF3FEC71-052B-4D60-9983-837B3CF556B2}.Debug - NuGet Packages|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF3FEC71-052B-4D60-9983-837B3CF556B2}.Debug - NuGet Packages|Any CPU.Build.0 = Debug|Any CPU
+		{DF3FEC71-052B-4D60-9983-837B3CF556B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF3FEC71-052B-4D60-9983-837B3CF556B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF3FEC71-052B-4D60-9983-837B3CF556B2}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF3FEC71-052B-4D60-9983-837B3CF556B2}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{DF3FEC71-052B-4D60-9983-837B3CF556B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF3FEC71-052B-4D60-9983-837B3CF556B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
